@@ -1,8 +1,10 @@
-import { useState } from 'react'
+import { useState } from 'react';
 
-import '../styles/tasklist.scss'
+// import toast, { Toaster } from 'react-hot-toast'; --TOASTS
 
-import { FiTrash, FiCheckSquare } from 'react-icons/fi'
+import '../styles/tasklist.scss';
+
+import { FiTrash, FiCheckSquare } from 'react-icons/fi';
 
 interface Task {
   id: number;
@@ -15,22 +17,51 @@ export function TaskList() {
   const [newTaskTitle, setNewTaskTitle] = useState('');
 
   function handleCreateNewTask() {
-    // Crie uma nova task com um id random, não permita criar caso o título seja vazio.
+    if(newTaskTitle.trim().length > 0){
+      let newId = Math.random();
+
+      while(tasks.findIndex(task => task.id === newId) !== -1){
+        newId = Math.random();
+      }
+
+      setTasks(oldTask => [...oldTask, {
+        id: newId,
+        title: newTaskTitle,
+        isComplete: false
+      }]);
+
+      setNewTaskTitle('');
+
+      // toast.success('Task adicionado!'); --TOASTS
+    }
+    // else toast.error("Digite o nome da task"); --TOASTS
   }
 
   function handleToggleTaskCompletion(id: number) {
-    // Altere entre `true` ou `false` o campo `isComplete` de uma task com dado ID
+    let index = tasks.findIndex(task => task.id === id);
+    if(index !== -1) {
+      let temp = tasks;
+      temp[index].isComplete = !temp[index].isComplete;
+      setTasks([...temp]);
+    }
+    // else toast.error("Task inválida"); --TOASTS
   }
 
   function handleRemoveTask(id: number) {
-    // Remova uma task da listagem pelo ID
+    let index = tasks.findIndex(task => task.id === id);
+    if(index !== -1) {
+      let temp = tasks;
+      temp.splice(index, 1);
+      setTasks([...temp]);
+      // toast.success("Task excluída"); --TOASTS
+    }
+    // else toast.error("Task inválida"); --TOASTS
   }
 
   return (
     <section className="task-list container">
       <header>
         <h2>Minhas tasks</h2>
-
         <div className="input-group">
           <input 
             type="text" 
@@ -69,6 +100,7 @@ export function TaskList() {
           
         </ul>
       </main>
+      {/* <Toaster/> --TOASTS */}
     </section>
   )
 }
