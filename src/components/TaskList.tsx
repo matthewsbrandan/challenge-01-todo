@@ -1,10 +1,11 @@
 import { useState } from 'react';
 
-// import toast, { Toaster } from 'react-hot-toast'; --TOASTS
+import toast, { Toaster } from 'react-hot-toast';
 
 import '../styles/tasklist.scss';
 
 import { FiTrash, FiCheckSquare } from 'react-icons/fi';
+import { useEffect } from 'react';
 
 interface Task {
   id: number;
@@ -13,9 +14,18 @@ interface Task {
 }
 
 export function TaskList() {
-  const [tasks, setTasks] = useState<Task[]>([]);
+  const [tasks, setTasks] = useState<Task[]>(() => {
+    const data = localStorage.getItem('tasks');
+    if(data){
+      return JSON.parse(data);
+    }
+    return [];
+  });
   const [newTaskTitle, setNewTaskTitle] = useState('');
 
+  useEffect(() => {
+    localStorage.setItem('tasks',JSON.stringify(tasks));
+  },[tasks]);
   function handleCreateNewTask() {
     if(newTaskTitle.trim().length > 0){
       let newId = Math.random();
@@ -32,9 +42,9 @@ export function TaskList() {
 
       setNewTaskTitle('');
 
-      // toast.success('Task adicionado!'); --TOASTS
+      toast.success('Task adicionado!');
     }
-    // else toast.error("Digite o nome da task"); --TOASTS
+    else toast.error("Digite o nome da task");
   }
 
   function handleToggleTaskCompletion(id: number) {
@@ -44,7 +54,7 @@ export function TaskList() {
       temp[index].isComplete = !temp[index].isComplete;
       setTasks([...temp]);
     }
-    // else toast.error("Task inválida"); --TOASTS
+    else toast.error("Task inválida");
   }
 
   function handleRemoveTask(id: number) {
@@ -53,9 +63,9 @@ export function TaskList() {
       let temp = tasks;
       temp.splice(index, 1);
       setTasks([...temp]);
-      // toast.success("Task excluída"); --TOASTS
+      toast.success("Task excluída");
     }
-    // else toast.error("Task inválida"); --TOASTS
+    else toast.error("Task inválida");
   }
 
   return (
@@ -100,7 +110,7 @@ export function TaskList() {
           
         </ul>
       </main>
-      {/* <Toaster/> --TOASTS */}
+      <Toaster/>
     </section>
   )
 }
