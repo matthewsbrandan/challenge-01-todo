@@ -3,7 +3,7 @@ section.task-list {
   border-radius: 1rem;
   
   margin-top: -10rem;
-  padding: 70px 60px;
+  padding: 4.375rem 3.75rem;
   
   filter: drop-shadow(0px 24px 64px rgba(0, 0, 0, 0.06));
   
@@ -21,6 +21,7 @@ section.task-list {
 
     .input-group {
       display: flex;
+      flex-wrap: wrap;
       gap: 0.25rem;
       align-items: center;
 
@@ -158,5 +159,42 @@ section.task-list {
         }
       }
     } 
+  }
+
+}
+@media(max-width: 380px){
+  section.task-list {
+    padding: 3.375rem 2.75rem;
+
+    header .input-group input {
+      max-width: calc(100vw - (2.75rem * 2));
+    }
+  }
+}
+@media(max-width: 330px){
+  section.task-list {
+    padding: 3.075rem 2.45rem;
+
+    header .input-group input {
+      max-width: calc(100vw - (2.45rem * 2));
+    }
+  }
+}
+@media(max-width: 280px){
+  section.task-list {
+    padding: 2.075rem 1.45rem;
+
+    header .input-group input {
+      max-width: calc(100vw - (1.45rem * 2));
+    }
+  }
+}
+@media(max-width: 250px){
+  section.task-list {
+    padding: 1.475rem 0.85rem;
+
+    header .input-group input {
+      max-width: calc(100vw - (0.85rem * 2));
+    }
   }
 }
