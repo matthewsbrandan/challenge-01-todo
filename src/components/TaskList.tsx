@@ -6,26 +6,66 @@ import '../styles/tasklist.scss';
 
 import { FiTrash, FiCheckSquare } from 'react-icons/fi';
 import { useEffect } from 'react';
+import { useParams } from 'react-router';
 
 interface Task {
   id: number;
   title: string;
   isComplete: boolean;
 }
+interface CardTask{
+  title: string;
+  slug: string;
+  checkedTasks: number;
+  countTasks: number;
+}
+interface CurrentCardTask extends CardTask {
+  index: number;
+}
 
+interface TaskListParams{
+  slug: string;
+}
 export function TaskList() {
+  // BEGIN:: HANDLE CARDTASKS
+  const { slug } = useParams<TaskListParams>();
+  const [cardTasks, setCardTasks] = useState<CardTask[]>(() => {
+    const storagedCardTasks = localStorage.getItem('@to.do:cardTasks');
+    if (storagedCardTasks) return JSON.parse(storagedCardTasks);
+    return [];
+  });
+  const [currentCardTask, setCurrentCardTask] = useState<CurrentCardTask>();
+// END:: HANDLE CARDTASKS
   const [tasks, setTasks] = useState<Task[]>(() => {
-    const data = localStorage.getItem('tasks');
-    if(data){
-      return JSON.parse(data);
-    }
+    if(!slug) return;
+    const data = localStorage.getItem(`@to.do:tasks:${slug}`);
+    if(data) return JSON.parse(data);
     return [];
   });
   const [newTaskTitle, setNewTaskTitle] = useState('');
 
   useEffect(() => {
-    localStorage.setItem('tasks',JSON.stringify(tasks));
+    const index = cardTasks.findIndex(task => task.slug === slug);
+    if(index == -1) return;
+
+    setCurrentCardTask({
+      ...cardTasks[index],
+      index,
+    });
+  },[cardTasks]);
+  useEffect(() => {
+    localStorage.setItem(`@to.do:tasks:${slug}`,JSON.stringify(tasks));
+    handleRefreshCardTasks();
   },[tasks]);
+
+  function handleRefreshCardTasks() {
+    if(!currentCardTask) return;
+    let temp = cardTasks;
+    temp[currentCardTask.index].checkedTasks = tasks.filter(task => task.isComplete).length ?? 0;
+    temp[currentCardTask.index].countTasks = tasks.length ?? 0;
+    setCardTasks(temp);
+    localStorage.setItem(`@to.do:cardTasks`,JSON.stringify(temp));
+  }
   function handleCreateNewTask() {
     if(newTaskTitle.trim().length > 0){
       let newId = Math.random();
@@ -71,7 +111,7 @@ export function TaskList() {
   return (
     <section className="task-list container">
       <header>
-        <h2>Minhas tasks</h2>
+        <h2>{currentCardTask ? currentCardTask.title :"Minhas tasks"}</h2>
         <div className="input-group">
           <input 
             type="text" 

@@ -1,0 +1,57 @@
+section.card-task {
+  background: var(--shapes);
+  border-radius: 1rem;
+  padding: 70px 60px;
+  filter: drop-shadow(0px 24px 64px rgba(0, 0, 0, 0.06));
+  margin: 0;
+  cursor: pointer;
+  
+  header {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    
+    h2 {
+      color: var(--text-title);
+      font-size: 2.25rem;
+      text-align: center;
+
+      &:hover{
+        text-decoration: underline;
+      }
+    }
+  }
+
+  main {
+    margin-top: 3rem;
+
+    p {
+      font-size: 1rem;
+      color: var(--text-light);
+      text-align: center;
+    }
+
+    button {
+      background: transparent;
+      border: 0;
+      margin: 1rem auto 0;
+      display: block;
+
+      svg {
+        color: var(--red);
+      }
+
+      &:hover {
+        svg {
+          filter: brightness(0.5)
+        }
+      }
+    }
+  }
+
+  &:hover{
+    filter: brightness(.98);
+  }
+}
